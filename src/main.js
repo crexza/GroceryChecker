@@ -1,7 +1,7 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
+import { autoUpdater } from 'electron-updater';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
@@ -32,7 +32,26 @@ const createWindow = () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-  createWindow();
+createWindow();
+ autoUpdater.checkForUpdatesAndNotify();
+
+autoUpdater.on('update-available', () => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Available',
+    message: 'A new update is available and is being downloaded.'
+  });
+});
+
+autoUpdater.on('update-downloaded', () => {
+  dialog.showMessageBox({
+    type: 'info',
+    title: 'Update Ready',
+    message: 'The update has been downloaded. The app will restart to install it.'
+  }).then(() => {
+    autoUpdater.quitAndInstall();
+  });
+});
 
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
