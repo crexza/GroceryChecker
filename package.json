@@ -1,7 +1,7 @@
 {
   "name": "grocery-list-checker",
   "productName": "Grocery List Checker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A grocery list checker desktop app",
   "main": ".vite/build/main.js",
   "author": "Caressa",
