@@ -30,9 +30,12 @@ const createWindow = () => {
 app.whenReady().then(() => {
   createWindow()
 
-  autoUpdater.checkForUpdatesAndNotify()
+  autoUpdater.on('checking-for-update', () => {
+    console.log('Checking for update...')
+  })
 
-  autoUpdater.on('update-available', () => {
+  autoUpdater.on('update-available', (info) => {
+    console.log('Update available:', info)
     dialog.showMessageBox({
       type: 'info',
       title: 'Update Available',
@@ -40,7 +43,16 @@ app.whenReady().then(() => {
     })
   })
 
-  autoUpdater.on('update-downloaded', () => {
+  autoUpdater.on('update-not-available', (info) => {
+    console.log('Update not available:', info)
+  })
+
+  autoUpdater.on('download-progress', (progressObj) => {
+    console.log('Download progress:', progressObj.percent)
+  })
+
+  autoUpdater.on('update-downloaded', (info) => {
+    console.log('Update downloaded:', info)
     dialog.showMessageBox({
       type: 'info',
       title: 'Update Ready',
@@ -49,6 +61,12 @@ app.whenReady().then(() => {
       autoUpdater.quitAndInstall()
     })
   })
+
+  autoUpdater.on('error', (err) => {
+    console.log('Update error:', err)
+  })
+
+  autoUpdater.checkForUpdatesAndNotify()
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
